@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkTube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000000; /* Black background */
+            color: #ff0000; /* Blood red text */
+            font-family: 'Creepster', cursive; /* Scary font */
+            margin: 0;
+            padding: 0;
+            padding-bottom: 60px; /* Add padding to avoid footer overlap */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh; /* Changed to min-height to allow expansion */
+            text-align: center;
+            /* Removed overflow: hidden to allow scrolling when content unlocks */
+        }
+        header {
+            background-color: #1a0000; /* Dark red-tinted black */
+            width: 100%;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.7); /* Intense red glow shadow */
+            border-bottom: 2px solid #ff0000; /* Red border like blood */
+        }
+        h1 {
+            color: #ff0000; /* Blood red title */
+            margin: 0;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px #000000, 0 0 10px #ff0000; /* Glowing red shadow for horror effect */
+            letter-spacing: 2px; /* Spaced out for creepiness */
+        }
+        nav {
+            margin-top: 10px;
+        }
+        nav a {
+            color: #ffffff; /* White links for contrast */
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #ff0000; /* Red shadow on links */
+        }
+        nav a:hover {
+            color: #ff0000; /* Red on hover */
+            text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000; /* Glowing hover */
+        }
+        .content-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        main {
+            padding: 20px;
+            max-width: 600px;
+            background: linear-gradient(to bottom, #000000, #330000); /* Gradient to dark red */
+            border: 1px solid #ff0000;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); /* Red aura */
+            flex: 1;
+        }
+        #reviews {
+            width: 300px;
+            margin-left: 20px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #000000, #330000);
+            border: 1px solid #ff0000;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            text-align: left;
+        }
+        .review {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #ff0000;
+            padding-bottom: 10px;
+        }
+        .review p {
+            margin: 5px 0;
+        }
+        .review .username {
+            font-style: italic;
+            color: #ffffff;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 1.2em;
+            text-shadow: 1px 1px 2px #000000;
+        }
+        button {
+            background-color: #ff0000; /* Blood red button */
+            color: #000000; /* Black text on button */
+            border: 2px solid #000000;
+            padding: 10px 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 0; /* Sharp edges for scariness */
+            box-shadow: 0 0 10px #ff0000;
+            font-family: 'Creepster', cursive;
+            transition: transform 0.3s ease;
+        }
+        button:hover {
+            background-color: #990000; /* Darker blood red */
+            transform: scale(1.1); /* Slight grow on hover for jump scare feel */
+            box-shadow: 0 0 20px #ff0000;
+        }
+        footer {
+            background-color: #1a0000;
+            width: 100%;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #ff0000;
+        }
+        /* Add a subtle animation for eerie effect */
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        h1, button {
+            animation: flicker 2s infinite alternate;
+        }
+        /* Content locker styles - assuming the script will handle visibility */
+        #locked-content {
+            display: none; /* Initially hidden; show after unlock */
+        }
+        .pack-section {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px dashed #ff0000;
+        }
+        /* Modal for locker window */
+        #lockerModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            padding-top: 60px;
+        }
+        #lockerModal .modal-content {
+            background-color: #1a1a1a;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #ff0000;
+            width: 80%;
+            max-width: 800px;
+            height: 80vh;
+            box-shadow: 0 0 20px #ff0000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        #lockerModal .close {
+            color: #ff0000;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #lockerModal .close:hover,
+        #lockerModal .close:focus {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #lockerModal .instructions {
+            font-size: 1.5em;
+            color: #ff0000;
+            text-shadow: 2px 2px 4px #000000;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #ff0000;
+        }
+        #lockerModal .access-note {
+            font-size: 1.2em;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #ff0000;
+            margin-bottom: 15px;
+        }
+        #lockerModal .issues-button {
+            background-color: #000000;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            padding: 8px 16px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 0;
+            box-shadow: 0 0 10px #ff0000;
+            font-family: 'Creepster', cursive;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        #lockerModal .issues-button:hover {
+            background-color: #330000;
+            transform: scale(1.05);
+        }
+        #lockerModal .issues-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        #lockerIframe {
+            flex-grow: 1;
+            width: 100%;
+            border: none;
+        }
+        /* Media query for mobile responsiveness */
+        @media (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+            }
+            main {
+                max-width: 100%;
+            }
+            #reviews {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 20px;
+            }
+            h1 {
+                font-size: 2em; /* Reduce font size on mobile */
+            }
+            p {
+                font-size: 1em; /* Adjust paragraph size */
+            }
+            button {
+                font-size: 1.2em; /* Adjust button size */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DarkTube</h1>
+        <nav>
+            <a href="#pack1"></a>
+            <a href="#pack2"></a>
+            <a href="#pack3"></a>
+        </nav>
+    </header>
+    <div class="content-container">
+        <main>
+            <p>Welcome to DarkTube, the ultimate and best website for discovering up-to-date Mega and Gofile links. Dive into our collection of exclusive, fresh content updated daily with the latest file shares, hidden gems, and downloads that will keep you coming back for more. Whether you're seeking rare archives, media packs, or resources, our platform ensures you have access to the most current links. We keep no logs of our users for complete anonymity. Unlock the packs below to reveal the content.</p>
+            <button onclick="showLocker()">Unlock Content</button>
+            
+            <!-- Locked content wrapper -->
+            <div id="locked-content">
+                <div id="pack1" class="pack-section">
+                </div>
+                <div id="pack2" class="pack-section">
+                </div>
+                <div id="pack3" class="pack-section">
+                </div>
+            </div>
+        </main>
+        <aside id="reviews">
+            <h2>Reviews</h2>
+            <div class="review">
+                <p>"This site has the best up-to-date links I've found anywhere!"</p>
+                <p class="username">- [Anonymous]</p>
+            </div>
+            <div class="review">
+                <p>"Love the daily updates and easy access to Mega and Gofile."</p>
+                <p class="username">- [Anonymous]</p>
+            </div>
+            <div class="review">
+                <p>"Highly recommend for anyone seeking fresh content packs."</p>
+                <p class="username">- [Anonymous]</p>
+            </div>
+            <div class="review">
+                <p>"No logs policy makes it feel secure and private."</p>
+                <p class="username">- [Anonymous]</p>
+            </div>
+        </aside>
+    </div>
+    <footer>
+        &copy; 2025 DarkTube. All rights reserved.
+    </footer>
+
+    <!-- Modal for the locker window -->
+    <div id="lockerModal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('lockerModal').style.display='none'">&times;</span>
+            <div class="instructions">In order to get access to our website, complete at least one of these offers</div>
+            <div class="access-note">Access is granted for 1 week only. After it ends, you'll need to complete another survey to regain access.</div>
+            <iframe id="lockerIframe" style="width:100%; border:none;"></iframe>
+            <a href="https://t.me/osahavac" target="_blank" class="issues-button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo">
+                IM HAVING ISSUES!
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showLocker() {
+            document.getElementById('lockerIframe').src = 'https://omnioffers.com/1861737';
+            document.getElementById('lockerModal').style.display = 'block';
+        }
+
+        // Listener for potential unlock message from the iframe (adjust based on actual locker implementation)
+        window.addEventListener('message', function(event) {
+            if (event.origin === 'https://omnioffers.com') {
+                if (event.data === 'unlocked' || event.data === 'og-unlocked' || (typeof event.data === 'object' && event.data.event === 'unlock')) {
+                    document.getElementById('locked-content').style.display = 'block';
+                    document.getElementById('lockerModal').style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
